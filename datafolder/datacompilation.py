@@ -11,7 +11,7 @@ import csv
 
 with open('TempvsGasUsage.data','r') as csvfile:
     reader = csv.reader(csvfile, quoting = csv.QUOTE_NONNUMERIC)
-    for row in reader
+    for row in reader(file)
            month.append(row[0])
            cooling.append(row[1])
            heating.append(row[2])
