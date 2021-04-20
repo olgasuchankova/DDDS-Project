@@ -6,16 +6,12 @@ data compilation
 
 @author: Lourdes
 """
-
 import csv
 
-with open('TempvsGasUsage.data','r') as csvfile:
-    reader = csv.reader(csvfile, quoting = csv.QUOTE_NONNUMERIC)
-    for row in reader(file)
-           month.append(row[0])
-           cooling.append(row[1])
-           heating.append(row[2])
-           max_temp.append(row[3])
-           min_temp.append(row[4])
-           mean_temp.append(row[5])
-           gas_usage.append(row[7])
+
+for k in range(1,6):
+    filename = 'lp'+str(k)+'.csv'
+    with open(filename,'r') as file:   
+        reader = csv.reader(file)
+        for row in reader:
+            print(row)
