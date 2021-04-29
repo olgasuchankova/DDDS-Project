@@ -18,7 +18,7 @@ from sklearn.metrics import f1_score
 import pickle
 
 
-def classifyAudio(X_train, X_test, y_train, y_test, num_feats, classifierName="Logisitic Regression (LR)"):
+def classify(X_train, X_test, y_train, y_test, num_feats, classifierName="Logisitic Regression (LR)"):
     # create model using different classifiers
     if classifierName == "KNearestNeighbors (KNN)":
         gsmodel = knnClassify(num_feats)
