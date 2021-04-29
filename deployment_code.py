@@ -11,8 +11,10 @@ from features import get_time_features as gtf
 file = open('practicedata.csv')
 numpy_array = np.loadtxt(file,delimiter=',')
 
-data = []
-data = gtf(numpy_array)
+time_features = []
+time_features = gtf(numpy_array)
+
+
 # with open('practicedata.csv','r') as file:
 #     reader = csv.reader(file,quoting=csv.QUOTE_NONNUMERIC)
 #     for row in reader:
