@@ -6,14 +6,12 @@ from features import get_classification_features as gcf
 from features import get_regression_features as grf
 # import math
 
-num_datasets = 4
+num_datasets = 5
 time_series_length = 15
 num_forces = 6
 
 
 def _load_data3d():
-
-
     data_matrix = []
     raw_csv_read = []
     pntr = 0
@@ -39,7 +37,7 @@ def _load_data3d():
                         (data_matrix[pntr - 1])[i].append(float(row[i - 1]))
                 # print(row)
 
-    arrx = np.array(data_matrix)
+    arrx = np.array(data_matrix, dtype=object)
     return arrx
 
 

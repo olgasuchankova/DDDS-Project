@@ -13,7 +13,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.metrics import plot_confusion_matrix
 
 
-def classify(X_train, X_test, y_train, y_test, classifierName="SVM",do_pca=False):    
+def classify(X_train, X_test, y_train, y_test, do_pca=False, classifierName="SVM"):    
     # create model using different classifiers
     # K-Nearest Neighbors
     if classifierName == "KNN":
