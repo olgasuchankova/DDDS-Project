@@ -4,6 +4,9 @@ import json
 from features import get_time_features as gtf
 import math
 
+num_datasets = 1
+time_series_length = 15
+
 def load_data3d():
     class_type = {}
     with open('datafolder/classtypes.json') as json_file:
@@ -12,7 +15,7 @@ def load_data3d():
     data_matrix = []
     raw_csv_read = []
     pntr = 0
-    for k in range(1,6):
+    for k in range(1,num_datasets+1):
         filename = 'datafolder/lp'+str(k)+'.csv'
         with open(filename,'r') as file:
             reader = csv.reader(file)
@@ -32,17 +35,37 @@ def load_data3d():
 
 
     arrx = np.array(data_matrix)
-    print(arrx)
     return arrx
 
+def clean_3d():
+    matrix = load_data3d()
 
+    labels = np.array(matrix[:,0], dtype=int)
+    num_entries = matrix.shape[0]
+    num_signals = matrix.shape[1] - 2
+    ret_matrix = np.zeros((num_entries, num_signals, time_series_length))
+
+    for i in range(num_entries):
+        for j in range(num_signals):
+            ret_matrix[i,j,:] = np.array(matrix[i,j])
+
+    return labels, ret_matrix
+
+
+def flat_labels(labels, n=time_series_length):
+    flat_label_m = np.zeros((len(labels)*n))
+
+    for i in range(len(labels)):
+        flat_label_m[i*n:(i+1)*n] = labels[i]*np.ones((n))
+
+    return flat_label_m
 
 
 def load_data2d():
     data_matrix = []
     raw_csv_read = []
     pntr = 0
-    for k in range(1, 6):
+    for k in range(1, num_datasets+1):
         filename = 'datafolder/lp' + str(k) + '.csv'
         with open(filename, 'r') as file:
             reader = csv.reader(file)
@@ -62,20 +85,15 @@ def load_data2d():
     arrx = np.array(data_matrix)
     return arrx[:,:,0]
 
-def features_loaded():
+def features_loaded(flat=False):
 
     timedat = load_data2d()
-    dataset = load_data3d()
+    labels, dataset = clean_3d()
 
-    extra_features = timedat.shape[1]
-    initial_shape = dataset.shape[1]
+    if flat:
+        labels = flat_labels(labels)
+        dataset = timedat
 
-    shortest = math.min(len(timedat, dataset))
-    ret_arr = np.zeros((shortest, dataset.shape[0] + extra_features))
+    return labels, dataset, gtf(timedat)
 
-    for i in range(shortest):
-        ret_arr[i, 0:initial_shape] = dataset[i,:]
-        ret_arr[i, initial_shape:] = timedat[i,:]
-
-    return ret_arr
-
+clean_3d()

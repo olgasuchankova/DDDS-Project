@@ -14,16 +14,15 @@ from data_compilation import features_loaded
 file = open('practicedata.csv')
 numpy_array = np.loadtxt(file,delimiter=',')
 
-load_preprocessed_data = features_loaded()
+labels, temporal, aggregate = features_loaded(flat=True)
 
 time_features = []
 num_time_feat = 4
-time_features = load_preprocessed_data[:, (time_features.shape[1] - num_time_feat):]
 
-labels=[]
-labels = load_preprocessed_data[0]
+
+
 X_train, X_test, y_train, y_test = train_test_split(
-    time_features, labels, test_size=0.15, shuffle=False)
+    temporal, labels, test_size=0.15, shuffle=False)
 
 train_score, test_score, y_pred, gridsearchmodel = clfr.classify(X_train,X_test,y_train,y_test,"Support Vector Machine (SVM)")
 
