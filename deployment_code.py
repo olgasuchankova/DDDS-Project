@@ -21,6 +21,7 @@ labels = np.ones(len(time_features))
 X_train, X_test, y_train, y_test = train_test_split(
     time_features, labels, test_size=0.15, shuffle=False)
 
+train_score, test_score, y_pred, gridsearchmodel = clfr.classify(X_train,X_test,y_train,y_test,"Support Vector Machine (SVM)")
 
 # with open('practicedata.csv','r') as file:
 #     reader = csv.reader(file,quoting=csv.QUOTE_NONNUMERIC)
