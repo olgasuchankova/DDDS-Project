@@ -17,6 +17,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score
 import pickle
 
+#X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=1)
 
 # def classify(X_train, X_test, y_train, y_test, num_feats, classifierName="Logisitic Regression (LR)"):
 def classify(X_train, X_test, y_train, y_test, classifierName="Logisitic Regression (LR)"):
