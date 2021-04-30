@@ -1,25 +1,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.svm import SVC
+
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
-from sklearn import neighbors
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import roc_curve, roc_auc_score
-from sklearn.metrics import confusion_matrix  # , plot_confusion_matrix
-from sklearn import svm
-from sklearn import linear_model as lm
-from sklearn.pipeline import make_pipeline
-from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import GridSearchCV
+from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import f1_score
-import pickle
+
+from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import plot_confusion_matrix
 
 
-def classify(X_train, X_test, y_train, y_test, classifierName="SVM",do_pca=False):
-    
+def classify(X_train, X_test, y_train, y_test, classifierName="SVM",do_pca=False):    
     # create model using different classifiers
     # K-Nearest Neighbors
     if classifierName == "KNN":
@@ -103,8 +97,8 @@ def LRClassify(do_pca):
     return gs_LR
 
 
-def evaluatePerformance(X_train, X_test, y_train, y_test, gridsearchmodel,
-                        classifiername,cvscores=True,CFM=True):
+def evaluatePerformance(X_train, X_test, y_train, y_test, gridsearchmodel, classifiername,
+                        CM = True, CV = True):
 
     # best parameters
     print(gridsearchmodel.best_params_)
@@ -117,22 +111,23 @@ def evaluatePerformance(X_train, X_test, y_train, y_test, gridsearchmodel,
     test_score = gridsearchmodel.score(X_test, y_test)
     print(classifiername, "Training Accuracy:", train_score)
     print(classifiername, "Test Accuracy:", test_score)
-
-    if cvscores == True:
-        scores = cross_val_score(gridsearchmodel, X_train, y_train, cv=5, scoring='accuracy')
-        print(classifiername, "Mean Accuracy: {:f}".format(np.mean(scores)))
-        print(classifiername, "Stdev of Accuracy: {:f}".format(np.std(scores)))
-
-    if CFM == True:
-        # confusion matrix
-        disp = plot_confusion_matrix(model,X_test,y_test,cmap=plt.cm.Blues,normalize='true')
-        disp.ax_.set_title("Normalized confusion matrix")
-        plt.show()
-
+    
+    if CM == True:
+        get_confusion_matrix(X_test, y_test, gridsearchmodel)
+        
+    if CV == True:
+        get_cv_scores(X_train, y_train, gridsearchmodel,classifiername)
+        
     return train_score, test_score, y_pred, gridsearchmodel
 
-# if __name__ == '__main__':
-#     instrumfeats_main = np.load('data_file.npy')
-#     targets_main = np.load('targets.npy')
-#     classifyAudio(instrumfeats_main,targets_main,num_feats=22)
-# runAllClassifiers(instrumfeats_main,targets_main)#,cvscores=True,CFM=True)
+def get_confusion_matrix(X_test, y_test, gridsearchmodel):
+    disp = plot_confusion_matrix(gridsearchmodel,X_test,y_test,cmap=plt.cm.Blues,normalize='true')
+    disp.ax_.set_title("Normalized confusion matrix")
+    plt.show()
+    
+def get_cv_scores(X_train, y_train, gridsearchmodel,classifiername):
+    scores = cross_val_score(gridsearchmodel, X_train, y_train, cv=5, scoring='accuracy')
+    print(" ")
+    print(classifiername, "Mean Accuracy: {:f}".format(np.mean(scores)))
+    print(classifiername, "Stdev of Accuracy: {:f}".format(np.std(scores)))
+    

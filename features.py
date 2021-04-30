@@ -52,6 +52,7 @@ def get_time_features(self):
     return time_stats
 
 def get_classification_features(X,y,num_feats):
+    # https://machinelearningmastery.com/feature-selection-with-real-and-categorical-data/
     # define feature selection
     fs = SelectKBest(score_func=f_classif, k=num_feats)
     # apply feature selection
@@ -60,6 +61,7 @@ def get_classification_features(X,y,num_feats):
     return X_selected
 
 def get_regression_features(X,y,num_feats):
+    # https://machinelearningmastery.com/feature-selection-with-real-and-categorical-data/
     # define feature selection
     fs = SelectKBest(score_func=f_regression, k=num_feats)
     # apply feature selection
