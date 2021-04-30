@@ -20,14 +20,14 @@ import pickle
 #X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=1)
 
 # def classify(X_train, X_test, y_train, y_test, num_feats, classifierName="Logisitic Regression (LR)"):
-def classify(X_train, X_test, y_train, y_test, classifierName="Logisitic Regression (LR)"):
+def classify(X_train, X_test, y_train, y_test,do_pca=False, classifierName="Logisitic Regression (LR)"):
     
     # create model using different classifiers
     if classifierName == "KNearestNeighbors (KNN)":
         gsmodel = knnClassify()
 
     if classifierName == "Support Vector Machine (SVM)":
-        gsmodel = svmClassify()
+        gsmodel = svmClassify(do_pca)
 
     if classifierName == "Logisitic Regression (LR)":
         gsmodel = LRClassify()
@@ -60,16 +60,18 @@ def knnClassify():
     return gs_knn
 
 
-def svmClassify():
+def svmClassify(do_pca):
     # Train the SVM classifier
-    # pca = PCA(0.98, svd_solver='full')
-
-    # svm_pipe = make_pipeline(StandardScaler(), pca, SVC(probability=True))
-    svm_pipe = make_pipeline(StandardScaler(), SVC(probability=True))
-
-    svm_param_grid = [{'svc__C': [0.1, 1, 10],
-                       'svc__kernel': ['poly', 'rbf', 'sigmoid', 'linear']}]#,
-                       # 'pca__n_components': np.arange(10, num_feats + 1, 5)}]
+    if do_pca == False:
+        svm_pipe = make_pipeline(StandardScaler(), SVC(probability=True))
+        svm_param_grid = [{'svc__C': [0.1, 1, 10],
+                       'svc__kernel': ['poly', 'rbf', 'sigmoid', 'linear']}]
+    else:
+        pca = PCA(0.98, svd_solver='full')
+        svm_pipe = make_pipeline(StandardScaler(),pca, SVC(probability=True))
+        svm_param_grid = [{'svc__C': [0.1, 1, 10],
+                       'svc__kernel': ['poly', 'rbf', 'sigmoid', 'linear'],
+                       'pca__n_components': [2,3,4,5,6,7,8,9,10]}]
 
     gs_SVM = GridSearchCV(estimator=svm_pipe,
                           param_grid=svm_param_grid,
