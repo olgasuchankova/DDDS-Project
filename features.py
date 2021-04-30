@@ -40,5 +40,7 @@ def get_time_features(self):
     # mode_ft = np.reshape(mode_ft,(k+1,j+1))
     time_stats = np.c_[mean, minimum, maximum, median_ft];#, mode_ft]
     # print(np.shape(time_stats))
+
+    print(time_stats.shape)
     
     return time_stats

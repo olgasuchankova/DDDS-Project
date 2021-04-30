@@ -1,6 +1,8 @@
 import csv
 import numpy as np
 import json
+from features import get_time_features as gtf
+import math
 
 def load_data3d():
     class_type = {}
@@ -34,6 +36,8 @@ def load_data3d():
     return arrx
 
 
+
+
 def load_data2d():
     data_matrix = []
     raw_csv_read = []
@@ -57,4 +61,21 @@ def load_data2d():
                 # print(row)
     arrx = np.array(data_matrix)
     return arrx[:,:,0]
+
+def features_loaded():
+
+    timedat = load_data2d()
+    dataset = load_data3d()
+
+    extra_features = timedat.shape[1]
+    initial_shape = dataset.shape[1]
+
+    shortest = math.min(len(timedat, dataset))
+    ret_arr = np.zeros((shortest, dataset.shape[0] + extra_features))
+
+    for i in range(shortest):
+        ret_arr[i, 0:initial_shape] = dataset[i,:]
+        ret_arr[i, initial_shape:] = timedat[i,:]
+
+    return ret_arr
 
