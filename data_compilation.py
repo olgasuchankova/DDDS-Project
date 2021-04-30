@@ -3,6 +3,7 @@ import numpy as np
 import json
 from features import get_time_features as gtf
 from features import get_classification_features as gcf
+from features import get_regression_features as grf
 import math
 
 num_datasets = 4
@@ -97,7 +98,7 @@ def _load_data2d():
     return arrx[:, :, 0]
 
 
-def features_loaded(flat=False,f_type='time',num_feats=4, rshape=False):
+def features_loaded(flat=False,f_type='time', rshape=False):
     timedat = _load_data2d()     # forcewise
     labels, dataset = _clean_3d() # short labels, 2d x training data (3d matrix)
 
@@ -109,7 +110,9 @@ def features_loaded(flat=False,f_type='time',num_feats=4, rshape=False):
     if f_type == 'time':
         features = gtf(timedat)
     elif f_type == 'classification':
-        features = gcf(timedat,labels,num_feats)
+        features = gcf(timedat,labels,4)
+    elif f_type == 'regression':
+        features = grf(timedat,labels,4)
     if rshape:
         dataset = _reshape(dataset)
 
