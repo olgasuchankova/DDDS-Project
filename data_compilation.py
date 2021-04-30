@@ -7,6 +7,7 @@ import math
 
 num_datasets = 1
 time_series_length = 15
+num_forces = 6
 
 
 def _load_data3d():
@@ -53,6 +54,12 @@ def _clean_3d():
 
     return labels, ret_matrix
 
+def _reshape(clean_data):
+    ret = np.zeros((clean_data.shape[0], num_forces*time_series_length))
+    for i in range(clean_data.shape[0]):
+        ret[i] = clean_data[i].flatten()
+    return ret
+
 
 def _flat_labels(labels, n=time_series_length):
     flat_label_m = np.zeros((len(labels) * n))
@@ -88,20 +95,21 @@ def _load_data2d():
     return arrx[:, :, 0]
 
 
-def features_loaded(flat=False,f_type='time',num_feats=4):
-    timedat = _load_data2d()
-    labels, dataset = _clean_3d()
+def features_loaded(flat=False,f_type='time',num_feats=4, rshape=False):
+    timedat = _load_data2d()     # forcewise
+    labels, dataset = _clean_3d() # short labels, 2d x training data (3d matrix)
 
     if flat:
         labels = _flat_labels(labels)
         dataset = timedat
-    
     features = []
-    
-    if f_type == 'time'
+
+    if f_type == 'time':
         features = gtf(timedat)
-    elif f_type == 'classification'
+    elif f_type == 'classification':
         features = gcf(timedat,labels,num_feats)
+    if rshape:
+        dataset = _reshape(dataset)
 
     return labels, dataset, features
 
