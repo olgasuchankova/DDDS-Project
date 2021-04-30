@@ -58,4 +58,3 @@ def load_data2d():
     arrx = np.array(data_matrix)
     return arrx[:,:,0]
 
-load_data2d()
