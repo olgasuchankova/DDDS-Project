@@ -5,20 +5,22 @@ from features import get_time_features as gtf
 from features import get_classification_features as gcf
 import math
 
-num_datasets = 1
+num_datasets = 4
 time_series_length = 15
 num_forces = 6
 
 
 def _load_data3d():
-    class_type = {}
-    with open('datafolder/classtypes.json') as json_file:
-        class_type = json.load(json_file)
+
 
     data_matrix = []
     raw_csv_read = []
     pntr = 0
-    for k in range(1, num_datasets + 1):
+    for k in range(num_datasets, num_datasets + 1):
+        class_type = {}
+        with open('datafolder/lp' + str(k) + '.json') as json_file:
+            class_type = json.load(json_file)
+
         filename = 'datafolder/lp' + str(k) + '.csv'
         with open(filename, 'r') as file:
             reader = csv.reader(file)
@@ -74,7 +76,7 @@ def _load_data2d():
     data_matrix = []
     raw_csv_read = []
     pntr = 0
-    for k in range(1, num_datasets + 1):
+    for k in range(num_datasets, num_datasets + 1):
         filename = 'datafolder/lp' + str(k) + '.csv'
         with open(filename, 'r') as file:
             reader = csv.reader(file)
