@@ -10,15 +10,6 @@ import classifier as clfr
 from data_compilation import features_loaded
 
 
-<<<<<<< HEAD
-=======
-file = open('practicedata.csv')
-numpy_array = np.loadtxt(file,delimiter=',')
-
-
-num_feat = 4
-
->>>>>>> 77708cf7c8a399faf890dc91a06df1592ed523aa
 labels, temporal, aggregate = features_loaded(flat=False,f_type='time')
 
 
@@ -27,14 +18,3 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 
 train_score, test_score, y_pred, gridsearchmodel = clfr.classify(X_train,X_test,y_train,y_test)
-<<<<<<< HEAD
-=======
-
-
-# with open('practicedata.csv','r') as file:
-#     reader = csv.reader(file,quoting=csv.QUOTE_NONNUMERIC)
-#     for row in reader:
-#         print(row)
-        
-    # data = gtf(reader)
->>>>>>> 77708cf7c8a399faf890dc91a06df1592ed523aa
