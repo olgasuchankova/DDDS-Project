@@ -16,10 +16,6 @@ numpy_array = np.loadtxt(file,delimiter=',')
 
 labels, temporal, aggregate = features_loaded(flat=True)
 
-time_features = []
-num_time_feat = 4
-
-
 
 X_train, X_test, y_train, y_test = train_test_split(
     temporal, labels, test_size=0.15, shuffle=False)
