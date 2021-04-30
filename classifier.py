@@ -19,35 +19,37 @@ import pickle
 
 #X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=1)
 
-def classify(X_train, X_test, y_train, y_test, num_feats, classifierName="Logisitic Regression (LR)"):
+# def classify(X_train, X_test, y_train, y_test, num_feats, classifierName="Logisitic Regression (LR)"):
+def classify(X_train, X_test, y_train, y_test, classifierName="Logisitic Regression (LR)"):
+    
     # create model using different classifiers
     if classifierName == "KNearestNeighbors (KNN)":
-        gsmodel = knnClassify(num_feats)
+        gsmodel = knnClassify()
 
     if classifierName == "Support Vector Machine (SVM)":
-        gsmodel = svmClassify(num_feats)
+        gsmodel = svmClassify()
 
     if classifierName == "Logisitic Regression (LR)":
-        gsmodel = LRClassify(num_feats)
+        gsmodel = LRClassify()
 
     # create pickle file of model
     gsmodel.fit(X_train, y_train)
-    filename = 'audio_classification_model.sav'
-    outfile = open(filename, 'wb')
-    pickle.dump(gsmodel, outfile)
-    outfile.close()
+    # filename = 'audio_classification_model.sav'
+    # outfile = open(filename, 'wb')
+    # pickle.dump(gsmodel, outfile)
+    # outfile.close()
 
     return evaluatePerformance(X_train, X_test, y_train, y_test, gsmodel, classifierName)
 
 
-def knnClassify(num_feats):
+def knnClassify():
     # Train the KNN classifier
     # https://www.ritchieng.com/machine-learning-efficiently-search-tuning-param/
 
     pca = PCA(0.98, svd_solver='full')
     knn_pipe = make_pipeline(StandardScaler(), pca, KNeighborsClassifier(n_neighbors=5))
-    knn_param_grid = [{'kneighborsclassifier__n_neighbors': [3, 4, 5, 6],
-                       'pca__n_components': np.arange(10, num_feats + 1, 5)}]
+    knn_param_grid = [{'kneighborsclassifier__n_neighbors': [3, 4, 5, 6]}]#,
+                       # 'pca__n_components': np.arange(10, num_feats + 1, 5)}]
 
     gs_knn = GridSearchCV(estimator=knn_pipe,
                           param_grid=knn_param_grid,
@@ -58,15 +60,16 @@ def knnClassify(num_feats):
     return gs_knn
 
 
-def svmClassify(num_feats):
+def svmClassify():
     # Train the SVM classifier
-    pca = PCA(0.98, svd_solver='full')
+    # pca = PCA(0.98, svd_solver='full')
 
-    svm_pipe = make_pipeline(StandardScaler(), pca, SVC(probability=True))
+    # svm_pipe = make_pipeline(StandardScaler(), pca, SVC(probability=True))
+    svm_pipe = make_pipeline(StandardScaler(), SVC(probability=True))
 
     svm_param_grid = [{'svc__C': [0.1, 1, 10],
-                       'svc__kernel': ['poly', 'rbf', 'sigmoid', 'linear'],
-                       'pca__n_components': np.arange(10, num_feats + 1, 5)}]
+                       'svc__kernel': ['poly', 'rbf', 'sigmoid', 'linear']}]#,
+                       # 'pca__n_components': np.arange(10, num_feats + 1, 5)}]
 
     gs_SVM = GridSearchCV(estimator=svm_pipe,
                           param_grid=svm_param_grid,
@@ -78,14 +81,14 @@ def svmClassify(num_feats):
     return gs_SVM
 
 
-def LRClassify(num_feats):
+def LRClassify():
     # Train Logistic Regression classifier
     pca = PCA(0.98, svd_solver='full')
     lr_pipe = make_pipeline(StandardScaler(), pca, LogisticRegression(max_iter=1000))
 
     lr_param_grid = [{'logisticregression__C': [1e-2, 1e-1, 1, 2],
-                      'logisticregression__solver': ['liblinear', 'newton-cg', 'lbfgs'],
-                      'pca__n_components': np.arange(10, num_feats + 1, 5)}]
+                      'logisticregression__solver': ['liblinear', 'newton-cg', 'lbfgs']}]#,
+                      # 'pca__n_components': np.arange(10, num_feats + 1, 5)}]
 
     gs_LR = GridSearchCV(estimator=lr_pipe,
                          param_grid=lr_param_grid,
