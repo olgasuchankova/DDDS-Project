@@ -17,39 +17,36 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score
 import pickle
 
-#X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=1)
 
-# def classify(X_train, X_test, y_train, y_test, num_feats, classifierName="Logisitic Regression (LR)"):
-def classify(X_train, X_test, y_train, y_test,do_pca=False, classifierName="Logisitic Regression (LR)"):
+def classify(X_train, X_test, y_train, y_test, classifierName="SVM",do_pca=False):
     
     # create model using different classifiers
-    if classifierName == "KNearestNeighbors (KNN)":
+    # K-Nearest Neighbors
+    if classifierName == "KNN":
         gsmodel = knnClassify()
-
-    if classifierName == "Support Vector Machine (SVM)":
+    # Support Vector Machine
+    if classifierName == "SVM":
         gsmodel = svmClassify(do_pca)
-
-    if classifierName == "Logisitic Regression (LR)":
+    # Logisitc Regression
+    if classifierName == "LR":
         gsmodel = LRClassify()
 
-    # create pickle file of model
     gsmodel.fit(X_train, y_train)
-    # filename = 'audio_classification_model.sav'
-    # outfile = open(filename, 'wb')
-    # pickle.dump(gsmodel, outfile)
-    # outfile.close()
 
     return evaluatePerformance(X_train, X_test, y_train, y_test, gsmodel, classifierName)
 
 
-def knnClassify():
+def knnClassify(do_pca):
     # Train the KNN classifier
     # https://www.ritchieng.com/machine-learning-efficiently-search-tuning-param/
-
-    pca = PCA(0.98, svd_solver='full')
-    knn_pipe = make_pipeline(StandardScaler(), pca, KNeighborsClassifier(n_neighbors=5))
-    knn_param_grid = [{'kneighborsclassifier__n_neighbors': [3, 4, 5, 6]}]#,
-                       # 'pca__n_components': np.arange(10, num_feats + 1, 5)}]
+    if do_pca == False:
+       knn_pipe = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=5))
+       knn_param_grid = [{'kneighborsclassifier__n_neighbors': [2,3,4,5]}] 
+    else:
+       pca = PCA(0.98, svd_solver='full')
+       knn_pipe = make_pipeline(StandardScaler(),pca, KNeighborsClassifier(n_neighbors=5))
+       knn_param_grid = [{'kneighborsclassifier__n_neighbors': [2,3,4,5],
+                        'pca__n_components': [2,3,4,5,6]}]
 
     gs_knn = GridSearchCV(estimator=knn_pipe,
                           param_grid=knn_param_grid,
@@ -71,7 +68,7 @@ def svmClassify(do_pca):
         svm_pipe = make_pipeline(StandardScaler(),pca, SVC(probability=True))
         svm_param_grid = [{'svc__C': [0.1, 1, 10],
                        'svc__kernel': ['poly', 'rbf', 'sigmoid', 'linear'],
-                       'pca__n_components': [2,3,4,5,6,7,8,9,10]}]
+                       'pca__n_components': [2,3,4,5,6]}]
 
     gs_SVM = GridSearchCV(estimator=svm_pipe,
                           param_grid=svm_param_grid,
@@ -83,14 +80,18 @@ def svmClassify(do_pca):
     return gs_SVM
 
 
-def LRClassify():
+def LRClassify(do_pca):
     # Train Logistic Regression classifier
-    pca = PCA(0.98, svd_solver='full')
-    lr_pipe = make_pipeline(StandardScaler(), pca, LogisticRegression(max_iter=1000))
-
-    lr_param_grid = [{'logisticregression__C': [1e-2, 1e-1, 1, 2],
-                      'logisticregression__solver': ['liblinear', 'newton-cg', 'lbfgs']}]#,
-                      # 'pca__n_components': np.arange(10, num_feats + 1, 5)}]
+    if do_pca == False:
+        lr_pipe = make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000))
+        lr_param_grid = [{'logisticregression__C': [1e-2, 1e-1, 1, 2],
+                      'logisticregression__solver': ['liblinear', 'newton-cg', 'lbfgs']}]
+    else:
+        pca = PCA(0.98, svd_solver='full')
+        lr_pipe = make_pipeline(StandardScaler(),pca, LogisticRegression(max_iter=1000))
+        lr_param_grid = [{'logisticregression__C': [1e-2, 1e-1, 1, 2],
+                      'logisticregression__solver': ['liblinear', 'newton-cg', 'lbfgs'],
+                      'pca__n_components': [2,3,4,5,6]}]
 
     gs_LR = GridSearchCV(estimator=lr_pipe,
                          param_grid=lr_param_grid,
@@ -103,7 +104,7 @@ def LRClassify():
 
 
 def evaluatePerformance(X_train, X_test, y_train, y_test, gridsearchmodel,
-                        classifiername):  # ,cvscores: bool,CFM: bool):
+                        classifiername,cvscores=True,CFM=True):
 
     # best parameters
     print(gridsearchmodel.best_params_)
@@ -117,16 +118,16 @@ def evaluatePerformance(X_train, X_test, y_train, y_test, gridsearchmodel,
     print(classifiername, "Training Accuracy:", train_score)
     print(classifiername, "Test Accuracy:", test_score)
 
-    # # if cvscores == True:
-    # scores = cross_val_score(gridsearchmodel, X_train, y_train, cv=5, scoring='accuracy')
-    # print(classifiername, "Mean Accuracy: {:f}".format(np.mean(scores)))
-    # print(classifiername, "Stdev of Accuracy: {:f}".format(np.std(scores)))
+    if cvscores == True:
+        scores = cross_val_score(gridsearchmodel, X_train, y_train, cv=5, scoring='accuracy')
+        print(classifiername, "Mean Accuracy: {:f}".format(np.mean(scores)))
+        print(classifiername, "Stdev of Accuracy: {:f}".format(np.std(scores)))
 
-    # if CFM == True:
-    # confusion matrix
-    # disp = plot_confusion_matrix(model,X_test,y_test,cmap=plt.cm.Blues,normalize='true')
-    # disp.ax_.set_title("Normalized confusion matrix")
-    # plt.show()
+    if CFM == True:
+        # confusion matrix
+        disp = plot_confusion_matrix(model,X_test,y_test,cmap=plt.cm.Blues,normalize='true')
+        disp.ax_.set_title("Normalized confusion matrix")
+        plt.show()
 
     return train_score, test_score, y_pred, gridsearchmodel
 

@@ -19,7 +19,7 @@ def get_time_features(self):
     maximum = []
     median_ft = []
     std_ft = []
-    # mode_ft = []
+    mode_ft = []
     
     for k in range(int(len(self)/15)):
         start = k*15
@@ -31,21 +31,21 @@ def get_time_features(self):
             maximum.append(np.max(self[start:stop,j]))
             median_ft.append(np.median(self[start:stop,j]))
             std_ft.append(np.std(self[start:stop,j]))
-            # mode_ft1 = mode(self[start:stop,j]) 
+            mode_ft1 = mode(self[start:stop,j]) 
             
-            # if isinstance(mode_ft1,collections.Sequence):
-            #     mode_ft1 = np.mean(mode_ft1)
+            if isinstance(mode_ft1,collections.Sequence):
+                mode_ft1 = np.mean(mode_ft1)
                 
-            # mode_ft.append(mode_ft1)
+            mode_ft.append(mode_ft1)
     
     mean = np.reshape(mean,(k+1,j+1))
     minimum = np.reshape(minimum,(k+1,j+1))
     maximum = np.reshape(maximum,(k+1,j+1))
     median_ft = np.reshape(median_ft,(k+1,j+1))
     std_ft = np.reshape(std_ft,(k+1,j+1))
-    # mode_ft = np.reshape(mode_ft,(k+1,j+1))
-    time_stats = np.c_[mean, minimum, maximum, median_ft, std_ft]#, mode_ft]
-    # print(np.shape(time_stats))
+    mode_ft = np.reshape(mode_ft,(k+1,j+1))
+    
+    time_stats = np.c_[mean, minimum, maximum, median_ft, std_ft, mode_ft]
 
     print(time_stats.shape)
     
