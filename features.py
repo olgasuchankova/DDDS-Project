@@ -8,7 +8,8 @@ extract features from each data set
 """
 import numpy as np
 from statistics import mode
-
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import f_classif
 
 
 def get_time_features(self):
@@ -44,3 +45,11 @@ def get_time_features(self):
     print(time_stats.shape)
     
     return time_stats
+
+def get_classification_features(X,y,num_feats):
+    # define feature selection
+    fs = SelectKBest(score_func=f_classif, k=num_feats)
+    # apply feature selection
+    X_selected = fs.fit_transform(X, y)
+    
+    return X_selected

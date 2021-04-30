@@ -2,6 +2,7 @@ import csv
 import numpy as np
 import json
 from features import get_time_features as gtf
+from features import get_classification_features as gcf
 import math
 
 num_datasets = 1
@@ -85,7 +86,7 @@ def load_data2d():
     arrx = np.array(data_matrix)
     return arrx[:,:,0]
 
-def features_loaded(flat=False):
+def features_loaded(flat=False,f_type='time',num_feats=4):
 
     timedat = load_data2d()
     labels, dataset = clean_3d()
@@ -93,7 +94,14 @@ def features_loaded(flat=False):
     if flat:
         labels = flat_labels(labels)
         dataset = timedat
+    
+    features = []
+    
+    if f_type == 'time'
+        features = gtf(timedat)
+    elif f_type == 'classification'
+        features = gcf(timedat,labels,num_feats)
 
-    return labels, dataset, gtf(timedat)
+    return labels, dataset, features
 
 clean_3d()
