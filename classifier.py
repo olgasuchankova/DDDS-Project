@@ -111,6 +111,7 @@ def evaluatePerformance(X_train, X_test, y_train, y_test, gridsearchmodel, class
     test_score = gridsearchmodel.score(X_test, y_test)
     print(classifiername, "Training Accuracy:", train_score)
     print(classifiername, "Test Accuracy:", test_score)
+<<<<<<< HEAD
     
     if CM == True:
         get_confusion_matrix(X_test, y_test, gridsearchmodel)
@@ -118,6 +119,20 @@ def evaluatePerformance(X_train, X_test, y_train, y_test, gridsearchmodel, class
     if CV == True:
         get_cv_scores(X_train, y_train, gridsearchmodel,classifiername)
         
+=======
+
+    # if cvscores == True:
+    #     scores = cross_val_score(gridsearchmodel, X_train, y_train, cv=5, scoring='accuracy')
+    #     print(classifiername, "Mean Accuracy: {:f}".format(np.mean(scores)))
+    #     print(classifiername, "Stdev of Accuracy: {:f}".format(np.std(scores)))
+    #
+    # if CFM == True:
+    #     # confusion matrix
+    #     disp = plot_confusion_matrix(model,X_test,y_test,cmap=plt.cm.Blues,normalize='true')
+    #     disp.ax_.set_title("Normalized confusion matrix")
+    #     plt.show()
+
+>>>>>>> 77708cf7c8a399faf890dc91a06df1592ed523aa
     return train_score, test_score, y_pred, gridsearchmodel
 
 def get_confusion_matrix(X_test, y_test, gridsearchmodel):

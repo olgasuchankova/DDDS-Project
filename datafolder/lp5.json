@@ -1,0 +1,5 @@
+{"normal" : 0,
+"bottom_collision" : 1,
+"bottom_obstruction": 2,
+"collision_in_part" : 3,
+"collision_in_tool" : 4}

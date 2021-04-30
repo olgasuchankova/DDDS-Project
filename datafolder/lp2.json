@@ -1,0 +1,7 @@
+{"normal" : 0,
+"collision" : 1,
+"fr_collision" : 2,
+  "front_col" : 2,
+"back_col" : 3,
+"right_col": 4,
+"left_col" : 5}
