@@ -17,13 +17,13 @@ def classify(X_train, X_test, y_train, y_test, do_pca=False, classifierName="SVM
     # create model using different classifiers
     # K-Nearest Neighbors
     if classifierName == "KNN":
-        gsmodel = knnClassify()
+        gsmodel = knnClassify(do_pca)
     # Support Vector Machine
     if classifierName == "SVM":
         gsmodel = svmClassify(do_pca)
     # Logisitc Regression
     if classifierName == "LR":
-        gsmodel = LRClassify()
+        gsmodel = LRClassify(do_pca)
 
     gsmodel.fit(X_train, y_train)
 
@@ -98,7 +98,7 @@ def LRClassify(do_pca):
 
 
 def evaluatePerformance(X_train, X_test, y_train, y_test, gridsearchmodel, classifiername,
-                        CM = True, CV = True):
+                        CM = True, CV = False):
 
     # best parameters
     print(gridsearchmodel.best_params_)

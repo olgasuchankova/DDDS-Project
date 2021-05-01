@@ -6,7 +6,7 @@ from features import get_classification_features as gcf
 from features import get_regression_features as grf
 # import math
 
-num_datasets = 5
+num_datasets = 1
 time_series_length = 15
 num_forces = 6
 
